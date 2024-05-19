@@ -71,20 +71,32 @@ if (!isset($_SESSION['productItems'])) {
                                                         Anak-Anak Fatahillah</p>
                                                 </td>
                                             </tr>
-                                        </tbody>
-                                    </table>
-                                    <hr>
-                                    <table style="width: 100%; margin-bottom: 20px;">
-                                        <tbody>
                                             <tr>
+                                                <td style="padding: 10px;" align="left" border-right: 1px solid #ccc; width="50%"
+                                                    valign="top">
+                                                    <h5 style="font-size: 20px; line-height: 30px; margin: 0px; padding: 0;">
+                                                        Customer Details</h5>
+                                                    <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Customer
+                                                        Name: <?= $cRowData['name'] ?> </p>
+                                                    <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Customer
+                                                        Class: <?= $cRowData['class'] ?> </p>
+                                                    <p style="font-size: 14px; line-height: 20px; margin:0px; padding: 0;">Customer
+                                                        Phone No.: <?= $cRowData['phone'] ?> </p>
+                                                    <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Customer
+                                                        Email Id: <?= $cRowData['email'] ?> </p>
+                                                </td>
                                                 <?php date_default_timezone_set('Asia/Jakarta'); ?>
-                                                <td style="padding: 10px;" align="center" width="50%" valign="top">
+                                                <td style="padding: 10px;" align="right" width="50%" valign="top">
                                                     <h5 style="font-size: 20px; line-height: 30px; margin: 0px; padding: 0;">Invoice
                                                         Details</h5>
                                                     <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Invoice
                                                         No: <?= $invoiceNo; ?> </p>
                                                     <p style="font-size: 14px; line-height: 20px; margin:0px; padding: 0;">Invoice
                                                         Date: <?= date('d/m/Y H:i:s'); ?> </p>
+                                                    <p style="font-size: 14px; line-height: 20px; margin:0px; padding: 0;">Address:
+                                                        Jl. Kp. Tengah, RT.06/RW.03, Kec. Cileungsi,</p>
+                                                    <p style="font-size: 14px; line-height: 20px; margin:0px; padding: 0;">
+                                                        Kabupaten Bogor, Jawa Barat, Indonesia</p>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -170,9 +182,9 @@ if (!isset($_SESSION['productItems'])) {
                                     aria-hidden="true"></i> Save</button>
                             <button class="btn btn-info px-4 mx-1" onclick="printMyBillingArea()"><i class="fa fa-print"
                                     aria-hidden="true"></i> Print</button>
-                            <button type="button" onclick="downloadPDF('<?= $_SESSION['invoice_no'] ?>')"
-                                class="btn btn-warning"><i class="fa fa-download" aria-hidden="true"></i> Download
-                                PDF</button>
+                            <button class="btn btn-warning px-4 mx-1"
+                                onclick="downloadPDF('<?= $SESSION['invoice_no']; ?>')"><i class="fa fa-download"
+                                    aria-hidden="true"></i> Download PDF</button>
 
                         </div>
                     <?php endif; ?>

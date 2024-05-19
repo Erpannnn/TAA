@@ -5,7 +5,8 @@
             <div class="page-wrapper">
                 <div class="page-body">
                     <h1 class="mt-4">Dashboard</h1>
-                    <?php alertMessage(); ?>
+                    <?php alertMessage(); 
+                    date_default_timezone_set('Asia/Jakarta');?>
                     <div class="row">
                         <div class="col-md-6 col-xl-3">
                             <div class="card bg-c-blue order-card">
@@ -98,7 +99,7 @@
                 <div class="card-body">
                     <?php
                     // Mendapatkan data total penjualan hari ini dari database
-                    date_default_timezone_set('Asia/Jakarta');
+                    
                     $todayDate = date('Y-m-d');
                     $todaySalesQuery = mysqli_query($conn, "SELECT product_id, SUM(quantity) AS total_sold FROM order_items WHERE DATE(order_date)='$todayDate' GROUP BY product_id");
                     $totalSalesToday = 0;
