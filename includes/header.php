@@ -21,6 +21,7 @@ require('config/function.php');
     <link rel="stylesheet" href="../includes/dist/css/adminlte.min.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/custom.css">
     <title>POS System</title>
 </head>
 
