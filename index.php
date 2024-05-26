@@ -10,6 +10,7 @@ include ('includes/header.php'); ?>
 
                 <h1 class="mt-3 text-light">Kasir berbasis PHP MySQL</h1>
 
+
                 <?php if (!isset($_SESSION['loggedIn'])): ?>
                     <a href="login.php" class="btn btn-primary mt-4">Login</a>
                 <?php endif; ?>

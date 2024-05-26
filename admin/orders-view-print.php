@@ -1,4 +1,4 @@
-<?php include ('includes/header.php'); ?>
+<?php include('includes/header.php'); ?>
 
 <div class="container-fluid px-4">
     <div class="card mt-4">
@@ -14,14 +14,14 @@
                 if (isset($_GET['track'])) {
                     $trackingNo = validate($_GET['track']);
                     if ($trackingNo == '') {
-                        ?>
+                ?>
                         <div class="text-center py-5">
                             <h5>Please provide Tracking Number</h5>
                             <div>
                                 <a href="orders.php" class="btn btn-primary mt-4 w-25">Go Back To Orders</a>
                             </div>
                         </div>
-                        <?php
+                    <?php
                     }
 
                     $orderQuery = "SELECT o.*, c.* FROM orders o, customers c
@@ -36,7 +36,7 @@
                     if (mysqli_num_rows($orderQueryRes) > 0) {
                         $orderDataRow = mysqli_fetch_assoc($orderQueryRes);
                         // print_r($orderDataRow);
-                        ?>
+                    ?>
                         <table style="width: 100%; margin-bottom: 20px; border-collapse: collapse; ">
                             <tbody>
                                 <tr>
@@ -51,8 +51,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding" : 10px;" align="left" border-right="1px solid #ccc" width="50%"
-                                        valign="top">
+                                    <td style="padding: 10px;" align="left" border-right="1px solid #ccc" width="50%" valign="top">
                                         <h5 style="font-size: 20px; line-height: 30px; margin: 0px; padding: 0;">
                                             Customer Details</h5>
                                         <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Customer
@@ -84,34 +83,43 @@
                         echo "<h5>No Data Found</h5>";
                         return false;
                     }
-                    $orderItemQuery = "SELECT oi.quantity as orderItemQuantity, oi.price as orderItemPrice, o.*, oi.*, p.* 
-                        FROM orders o, order_items oi, products p
-                        WHERE oi.order_id=o.id AND p.id=oi.product_id AND o.tracking_no='$trackingNo'";
+                    $orderItemQuery = "SELECT oi.quantity as orderItemQuantity, 
+                          oi.price as orderItemPrice, 
+                          o.*, 
+                          oi.*, 
+                          p.*, 
+                          o.money as orderMoney, 
+                          o.total_amount as totalAmount 
+                   FROM orders o, 
+                        order_items oi, 
+                        products p 
+                   WHERE oi.order_id = o.id 
+                     AND p.id = oi.product_id 
+                     AND o.tracking_no = '$trackingNo'";
 
                     $orderItemQueryRes = mysqli_query($conn, $orderItemQuery);
+
                     if ($orderItemQueryRes) {
                         if (mysqli_num_rows($orderItemQueryRes) > 0) {
-                            ?>
+                        ?>
 
                             <div class="table-responsive mb-3">
-                                <table style="width: 100%; " cellpadding="5">
+                                <table style="width: 100%;" cellpadding="5">
                                     <thead>
                                         <tr>
                                             <th align="start" style="border-bottom: 1px solid #ccc;" width="5%">No.</th>
                                             <th align="start" style="border-bottom: 1px solid #ccc;">Product Name</th>
                                             <th align="start" style="border-bottom: 1px solid #ccc;" width="15%">Price</th>
-                                            <th align="start" style="border-bottom: 1px solid #ccc;" width="15%">Quantity
-                                            </th>
-                                            <th align="start" style="border-bottom: 1px solid #ccc;" width="20%">Total Price
-                                            </th>
+                                            <th align="start" style="border-bottom: 1px solid #ccc;" width="15%">Quantity</th>
+                                            <th align="start" style="border-bottom: 1px solid #ccc;" width="20%">Total Price</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
                                         <?php
                                         $i = 1;
-                                        foreach ($orderItemQueryRes as $key => $row):
-                                            ?>
+                                        foreach ($orderItemQueryRes as $key => $row) :
+                                        ?>
 
                                             <tr>
                                                 <td style="border-bottom: 1px solid #ccc;"><?= $i++; ?></td>
@@ -119,7 +127,7 @@
                                                 <td style="border-bottom: 1px solid #ccc;">Rp.
                                                     <?= number_format($row['orderItemPrice'], 0, ',', '.'); ?>
                                                 </td>
-                                                <td style="border-bottom: 1px solid #ccc;"><?= $row['orderItemQuantity'] ?></td>
+                                                <td style="border-bottom: 1px solid #ccc;"><?= $row['orderItemQuantity']; ?></td>
                                                 <td style="border-bottom: 1px solid #ccc;" class="fw-bold">
                                                     Rp.
                                                     <?= number_format($row['orderItemPrice'] * $row['orderItemQuantity'], 0, ',', '.'); ?>
@@ -129,11 +137,22 @@
 
                                         <tr>
                                             <td colspan="4" align="end" style="font-weight: bold;">Grand Total:</td>
-                                            <td colspan="1" style="font-weight: bold;">Rp.
-                                                <?= number_format($row['total_amount'], 0, ',', '.'); ?>
+                                            <td colspan="1" style="font-weight: bold;">
+                                                Rp. <?= number_format($row['totalAmount'], 0, ',', '.'); ?>
                                             </td>
                                         </tr>
-
+                                        <tr>
+                                            <td colspan="4" align="end" style="font-weight: bold;">Tunai:</td>
+                                            <td colspan="1" style="font-weight: bold;">
+                                                Rp. <?= number_format($row['orderMoney'], 0, ',', '.'); ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" align="end" style="font-weight: bold;">Kembalian:</td>
+                                            <td colspan="1" style="font-weight: bold;">
+                                                Rp. <?= number_format($row['orderMoney'] - $row['totalAmount'], 0, ',', '.'); ?>
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td colspan="5">Payment Mode: <?= $row['payment_mode']; ?></td>
                                         </tr>
@@ -143,7 +162,7 @@
 
                             </div>
 
-                            <?php
+                    <?php
                         } else {
                             echo "<h5>No data found</h5>";
                             return false;
@@ -152,7 +171,6 @@
                         echo "<h5>Something When Wrong!</h5>";
                         return false;
                     }
-
                 } else {
                     ?>
                     <div class="text-center py-5">
@@ -161,7 +179,7 @@
                             <a href="orders.php" class="btn btn-primary mt-4 w-25">Go Back To Orders</a>
                         </div>
                     </div>
-                    <?php
+                <?php
 
                 }
                 ?>
@@ -178,4 +196,4 @@
 
     </div>
 </div>
-<?php include ('includes/footer.php'); ?>
+<?php include('includes/footer.php'); ?>

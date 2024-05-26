@@ -147,16 +147,20 @@ if (isset($_POST['productIncDec'])) {
 
 if (isset($_POST['proceedToPlaceBtn'])) {
     $phone = validate($_POST['cphone']);
+    $money = validate($_POST['money']);
     $payment_mode = validate($_POST['payment_mode']);
 
     //Cek untuk pelanggan
+// 
+    $checkCustomer = mysqli_query($conn, "SELECT * FROM customers");
 
-    $checkCustomer = mysqli_query($conn, "SELECT * FROM customers WHERE phone='$phone' LIMIT 1");
+    // $checkCustomer = 1;
 
     if ($checkCustomer) {
         if (mysqli_num_rows($checkCustomer) > 0) {
             $_SESSION['invoice_no'] = "INV-" . rand(111111, 999999);
-            $_SESSION['cphone'] = $phone;
+            // $_SESSION['cphone'] = $phone;
+            $_SESSION['money'] = $money;
             $_SESSION['payment_mode'] = $payment_mode;
             jsonResponse(200, 'success', 'Pelanggan Ditemukan!');
         } else {
@@ -204,10 +208,11 @@ if (isset($_POST['saveOrder'])) {
     $phone = validate($_SESSION['cphone']);
     $invoice_No = validate($_SESSION['invoice_no']);
     $payment_mode = validate($_SESSION['payment_mode']);
+    $money = validate($_SESSION['money']);
     $order_placed_by_id = $_SESSION['loggedInUser']['user_id'];
 
 
-    $checkCustomer = mysqli_query($conn, "SELECT * FROM customers WHERE phone='$phone'");
+    $checkCustomer = mysqli_query($conn, "SELECT * FROM customers");
     if (!$checkCustomer) {
         jsonResponse(500, 'error', 'Something Went Wrong!');
     }
@@ -230,7 +235,8 @@ if (isset($_POST['saveOrder'])) {
         date_default_timezone_set('Asia/Jakarta');
 
         $data = [
-            'customer_id' => $customerData['id'],
+            // 'customer_id' => $customerData['id'],
+            'money' => $money,
             'tracking_no' => rand(11111, 99999),
             'invoice_no' => $invoice_No,
             'total_amount' => $totalAmount,
@@ -274,14 +280,14 @@ if (isset($_POST['saveOrder'])) {
 
         unset($_SESSION['productItemIds']);
         unset($_SESSION['productItems']);
-        unset($_SESSION['cphone']);
+        // unset($_SESSION['cphone']);
         unset($_SESSION['payment_mode']);
         unset($_SESSION['invoice_no']);
         
         if ($lastOrderId) {
             jsonResponse(200, 'success', 'Order Placed Successfully');
-        } else {
-            jsonResponse(404, 'warning', 'No Customer Found!');
+        // } else {
+        //     jsonResponse(404, 'warning', 'No Customer Found!');
         }
         
 

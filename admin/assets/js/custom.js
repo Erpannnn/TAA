@@ -2,27 +2,26 @@ $(document).ready(function(){
 
     alertify.set('notifier','position', 'top-right');
 
-    $(document).on('click', '.increment', function(){
+    $(document).on('click', '.increment', function() {
 
         var $quantityInput = $(this).closest('.qtyBox').find('.qty');
         var productId = $(this).closest('.qtyBox').find('.prodId').val();
         var currentValue = parseInt($quantityInput.val());
-        
 
-        if(!isNaN(currentValue)){
+        if (!isNaN(currentValue)) {
             var qtyVal = currentValue + 1;
             $quantityInput.val(qtyVal);
             quantityIncDec(productId, qtyVal);
         }
     });
 
-    $(document).on('click', '.decrement', function(){
+    $(document).on('click', '.decrement', function() {
 
         var $quantityInput = $(this).closest('.qtyBox').find('.qty');
         var productId = $(this).closest('.qtyBox').find('.prodId').val();
         var currentValue = parseInt($quantityInput.val());
 
-        if(!isNaN(currentValue) && currentValue > 1){
+        if (!isNaN(currentValue) && currentValue > 1) {
             var qtyVal = currentValue - 1;
             $quantityInput.val(qtyVal);
             quantityIncDec(productId, qtyVal);
@@ -61,7 +60,13 @@ $(document).ready(function(){
         // console.log('proceedToPlace');
 
         var cphone = $('#cphone').val();
+        var money = $('#money').val();
         var payment_mode = $('#payment_mode').val();
+
+        if(money == ''){
+            swal("Masukkan Nominal Bayar","Masukkan Nominal Yang Benar","warning");
+            return false;
+        }
 
         if(payment_mode == ''){
             swal("Pilih Metode Pembayaran","Pilih Metode Pembayaran Kamu","warning");
@@ -69,15 +74,16 @@ $(document).ready(function(){
 
         }
 
-        if(cphone == '' && !$.isNumeric(cphone)){
+        // if(cphone == '' && !$.isNumeric(cphone)){
 
-            swal("Masukkan Nomor Telepon","Masukkan Nomor Telepon Yang Benar","warning");
-            return false;
+        //     swal("Masukkan Nomor Telepon","Masukkan Nomor Telepon Yang Benar","warning");
+        //     return false;
 
-        }
+        // }
 
         var data = {
             'proceedToPlaceBtn': true,
+            'money': money,
             'cphone': cphone,
             'payment_mode': payment_mode,
         };

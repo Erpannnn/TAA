@@ -1,4 +1,4 @@
-<?php include ('includes/header.php'); ?>
+<?php include('includes/header.php'); ?>
 
 <div class="modal fade" id="addCustomerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -46,15 +46,23 @@
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label for="">Pilih Produk</label>
+                        <?php
+                        // Membuat query untuk mengambil data produk dan kategori mereka
+                        $query = "SELECT p.id, p.name, c.name as category 
+                        FROM products p 
+                        JOIN categories c ON p.category_id = c.id";
+
+                        $result = mysqli_query($conn, $query);
+                        ?>
+
                         <select name="product_id" class="form-select mySelect2">
                             <option value="">-- Pilih Produk --</option>
                             <?php
-                            $products = getAll('products');
-                            if ($products) {
-                                if (mysqli_num_rows($products) > 0) {
-                                    foreach ($products as $prodItem) {
+                            if ($result) {
+                                if (mysqli_num_rows($result) > 0) {
+                                    while ($prodItem = mysqli_fetch_assoc($result)) {
                             ?>
-                                        <option value="<?= $prodItem['id'] ?>"><?= $prodItem['name'] ?></option>
+                                        <option value="<?= $prodItem['id'] ?>"><?= $prodItem['name'] ?> - <?= $prodItem['category'] ?></option>
                             <?php
                                     }
                                 } else {
@@ -65,6 +73,7 @@
                             }
                             ?>
                         </select>
+
                     </div>
                     <div class="col-md-2 mb-3">
                         <label for="">Kuantitas</label>
@@ -113,7 +122,7 @@
                             <?php
                             $i = 1;
                             $subtotal = 0; // Initialize subtotal variable
-                            foreach ($sessionProducts as $key => $item):
+                            foreach ($sessionProducts as $key => $item) :
                                 $totalPrice = $item['price'] * $item['quantity'];
                                 $subtotal += $totalPrice; // Add each item's total price to subtotal
                             ?>
@@ -133,7 +142,9 @@
                                     </td>
                                     <td>Rp. <?= number_format($totalPrice, 0, ',', '.'); ?></td>
                                     <td>
-                                        <a class="noselect button" href="orders-item-delete.php?index=<?= $key; ?>"><span class="text">Delete</span><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path></svg></span></a>
+                                        <a class="noselect button" href="orders-item-delete.php?index=<?= $key; ?>"><span class="text">Delete</span><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                                    <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path>
+                                                </svg></span></a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -157,7 +168,9 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label>Bayar</label>
-                            <input type="number" id="cphone" class="form-control" value="">
+                            <input type="hidden" id="cphone" class="form-control" value="">
+                            <input type="number" id="money" class="form-control" value="">
+
                         </div>
                         <div class="col-md-4 mb-3 d-flex align-items-end">
                             <button type="button" class="btn btn-warning w-100 proceedToPlace">Lanjutkan <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
@@ -171,29 +184,29 @@
     </div>
 </div>
 
-<?php include ('includes/footer.php'); ?>
+<?php include('includes/footer.php'); ?>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const barcodeInput = document.getElementById('barcode-input');
 
         // Focus on the barcode input field on page load
         barcodeInput.focus();
 
-        barcodeInput.addEventListener(function () {
+        barcodeInput.addEventListener(function() {
             // Submit the form when input is detected
             document.getElementById('barcode-form').submit();
         });
 
         // Event listener for form submission to refocus the barcode input
-        document.getElementById('barcode-form').addEventListener('submit', function (event) {
+        document.getElementById('barcode-form').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
 
             // Submit the form via AJAX
             const xhr = new XMLHttpRequest();
             xhr.open('POST', 'orders-code.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                     // Handle the response if necessary
                     console.log('Form submitted successfully');
